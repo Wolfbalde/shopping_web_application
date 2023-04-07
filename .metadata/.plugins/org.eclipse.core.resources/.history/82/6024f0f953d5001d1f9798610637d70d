@@ -1,0 +1,31 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<style>
+h1{
+text-align:center;
+}
+</style>
+<head>
+<meta charset="ISO-8859-1">
+<title>Customer Logged in</title>
+</head>
+<body>
+<%
+		response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+		response.setHeader("Pragma","no-cache");
+		response.setHeader("Expires", "0");
+		if(session.getAttribute("uname")==null){
+			response.sendRedirect("index.jsp");
+		}
+	%>
+	<h1>Logged In Successfully....</h1><br><br><br>
+	<h3>Welcome ${uname}</h3>
+	<a href="buyitem.jsp"> Click here to buy items</a><br><br><br>
+	<form action="Logout"> 
+    <input type="submit" value="Logout">
+    </form><br><br><br>
+    <a href="Cart.jsp">Click here to view your cart</a>
+</body>
+</html>

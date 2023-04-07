@@ -1,0 +1,69 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.PrintWriter"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<style>
+h1 {
+	text-align: center;
+}
+</style>
+<head>
+<meta charset="ISO-8859-1">
+<title>Cart</title>
+</head>
+<body>
+	<%
+		response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+		response.setHeader("Pragma","no-cache");
+		response.setHeader("Expires", "0");
+		if(session.getAttribute("uname")==null){
+			response.sendRedirect("index.jsp");
+		}
+%>
+	<%
+int total=0;
+PrintWriter pw = response.getWriter();
+Class.forName("oracle.jdbc.driver.OracleDriver");
+Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Akaash", "maximo");
+Statement st = con.createStatement();
+ResultSet rs = st.executeQuery("select * from Cart");
+pw.print("<table border = '1' width = '100%'>");
+pw.print("<tr>");
+pw.print("<th>Item Name</th>");
+pw.print("<th>Quantity</th>");
+pw.print("<th>Price</th>");
+pw.print("<th>Total</th>");
+while(rs.next()) {
+	String item=rs.getString("Name");
+	int qty=rs.getInt("Quantity");
+	int price=rs.getInt("Price");
+	int a=price*qty;
+	total=a+total;
+	pw.print("</tr>");
+	pw.print("<tr>");
+	pw.print("<td>");
+	pw.print(item);
+	pw.print("</td>");
+	pw.print("<td>");
+	pw.print(qty);
+	pw.print("</td>");
+	pw.print("<td>");
+	pw.print(price);
+	pw.print("</td>");
+	pw.print("<td>");
+	pw.print(a);
+	pw.print("</td>");
+}
+pw.print("<h1>The total amount is: Rs. </h1>");
+pw.print(total);
+%>
+	<form action="Logout">
+		<input type="submit" value="Logout">
+	</form>
+	<form action="PayBill">
+	<input type="submit" value="Pay Bill">
+	</form>
+</body>
+</html>

@@ -1,0 +1,26 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class item {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
+		// TODO Auto-generated method stub
+		try {
+			int qty=102;
+			String name="Lays";
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Akaash", "maximo");
+		Statement st = con.createStatement();
+		//st.executeQuery("create table Item(Name varchar2(200),Quantity int,Price int)");
+		PreparedStatement ps = con.prepareStatement("update Item set Quantity=? where Name=?");
+		ps.setInt(1,qty);
+		ps.setString(2, name);
+		
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

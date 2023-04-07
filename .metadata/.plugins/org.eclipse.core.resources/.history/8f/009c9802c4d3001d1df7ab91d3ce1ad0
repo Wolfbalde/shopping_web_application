@@ -1,0 +1,22 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Admin Logged in</title>
+</head>
+<body>
+<%
+		response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+		response.setHeader("Pragma","no-cache");
+		response.setHeader("Expires", "0");
+		if(session.getAttribute("uname")==null){
+			response.sendRedirect("index.jsp");
+		}
+	%>
+	<a href="additem.jsp">Click here to add new items</a><br><br><br>
+	<a href="restock.jsp">Click here to restock items</a><br><br><br>
+	<a href="index.jsp"> Click here to Logout</a>>
+</body>
+</html>

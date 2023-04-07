@@ -1,0 +1,13 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Admin Logged in</title>
+</head>
+<body>
+	<a href="additem.jsp">Click here to add new items</a><br><br><br>
+	<a href="restock.jsp">Click here to restock items</a><br><br><br>
+</body>
+</html>

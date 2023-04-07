@@ -1,0 +1,71 @@
+package com.shop;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/PayBill")
+public class PayBill extends HttpServlet {
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			String s="";
+			boolean over=false;
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			PrintWriter pw = response.getWriter();
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Akaash", "maximo");
+			Statement st = con.createStatement();
+			Statement st1 = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Item");
+			while(rs.next()) {
+				ResultSet rs1 = st1.executeQuery("select * from Cart");
+				while(rs1.next()) {
+					String s1=rs1.getString("Name");
+					String s2=rs.getString("Name");
+					s=s1;
+					if(s1.equals(s2)) {
+						int a=rs1.getInt("Quantity");
+						int b=rs.getInt("Quantity");
+						if((b-a)<0) {
+							over=true;
+							break;
+						}
+						if((b-a)>0) {
+							PreparedStatement ps = con.prepareStatement("update Item set Quantity=? where Name=?");
+							ps.setInt(1, b-a);
+							ps.setString(2,s1);
+							ps.executeUpdate();
+						}
+					}
+				}
+			}
+			if(over==true) {
+				pw.print("We do not enough Quantity of");
+				pw.print(s);
+				pw.print("<a href=Cart.jsp>Click here to reduce item quantity");
+			}
+			if(over==false) {
+				st.executeQuery("delete from Cart");
+				pw.print("Your items will be delivered to your home shortly");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+}

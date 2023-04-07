@@ -1,0 +1,81 @@
+package com.shop;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/BuyItem")
+public class BuyItem extends HttpServlet {
+
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			response.setContentType("text/html");
+			String item=request.getParameter("buyitem");
+			String qt=request.getParameter("buyqty");
+			int qty=Integer.parseInt(qt);
+			boolean exist=false;
+			boolean b=false;
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			PrintWriter pw = response.getWriter();
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Akaash", "maximo");
+			Statement st = con.createStatement();
+			ResultSet rs1 = st.executeQuery("select * from Cart");
+			while(rs1.next()) {
+				String ab=rs1.getString("Name");
+				if(item.equals(ab)) {
+					exist=true;
+					int db_qty=rs1.getInt("Quantity");
+					db_qty=db_qty+qty;
+					PreparedStatement ps = con.prepareStatement("update Cart set Quantity=? where Name=?");
+					ps.setInt(1, db_qty);
+					ps.setString(2,ab);
+					ps.executeUpdate();
+				}
+			}
+			if(exist==false) {
+				ResultSet rs = st.executeQuery("select * from Item");
+				while(rs.next()) {
+					String aitem=rs.getString("Name");
+					if(item.equals(aitem)) {
+						b=true;
+						String aqt=rs.getString("Quantity");
+						int aqty=Integer.parseInt(aqt);
+						String apric=rs.getString("Price");
+						int aprice=Integer.parseInt(apric);
+						PreparedStatement ps = con.prepareStatement("insert into Cart values(?,?,?)");
+						ps.setString(1, item);
+						ps.setInt(2, qty);
+						ps.setInt(3, aprice);
+						ps.executeUpdate();
+					}
+					
+				}
+			}
+			if(b==false) {
+				pw.println("Sandy's Store doen't currently have this item<br><br><br><br><br>");
+				pw.println("<a href='buyitem.jsp'>Click here to buy items</a>");
+			}
+			pw.println("<br><br><br><br><br><br><br>");
+			pw.print("<a href='Cart.jsp'>Click here to view your cart</a>");
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+}

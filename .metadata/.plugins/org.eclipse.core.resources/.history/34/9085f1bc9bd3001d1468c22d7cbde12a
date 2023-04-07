@@ -1,0 +1,47 @@
+package com.shop;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/Restock")
+public class Restock extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		try {
+			response.setContentType("text/html");
+			String name=request.getParameter("item");
+			String qt=request.getParameter("restqty");
+			int qty=Integer.parseInt(qt);
+			boolean exist=false;
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			PrintWriter pw = response.getWriter();
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Akaash", "maximo");
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from Item");
+			while(rs.next()) {
+				String aitem=rs.getString("Name");
+				int aqty=rs.getInt("Quantity");
+				qty=qty+aqty;
+				if(name.equals(aitem)) {
+					st.executeQuery("Update Item set Quantity=qty where Name=name");
+				}
+			}
+			pw.println("<a href='index.jsp'>Home Page</a>");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+}

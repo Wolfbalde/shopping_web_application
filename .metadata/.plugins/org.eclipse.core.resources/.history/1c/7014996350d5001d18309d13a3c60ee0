@@ -1,0 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Item</title>
+</head>
+<body>
+<%
+		response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+		response.setHeader("Pragma","no-cache");
+		response.setHeader("Expires", "0");
+		if(session.getAttribute("uname")==null){
+			response.sendRedirect("index.jsp");
+		}
+		
+%>
+<form action="AddItem" >
+Enter the new item <input type="text" name="item"><br><br><br><br>
+Enter the item quantity <input type="text" name="qty"><br><br><br><br>
+Enter the price of the item <input type="double" name="price">
+<input type="submit" value="Add Item">
+</form>
+<form action="Logout"> 
+    <input type="submit" value="Logout">
+    </form>
+</body>
+</html>
